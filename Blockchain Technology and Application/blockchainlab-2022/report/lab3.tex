@@ -1,0 +1,218 @@
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{verbatim}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{fontspec}
+\newfontfamily\jetbrains{JetBrains Mono}
+\lstset{
+    breaklines,                                 % 自动将长的代码行换行排版
+    extendedchars=false,                        % 解决代码跨页时，章节标题，页眉等汉字不显示的问题
+    backgroundcolor=\color[rgb]{0.96,0.96,0.96},% 背景颜色
+    keywordstyle=\color{blue}\bfseries,         % 关键字颜色
+    identifierstyle=\color{black},              % 普通标识符颜色
+    commentstyle=\color[rgb]{0,0.6,0},          % 注释颜色
+    stringstyle=\color[rgb]{0.58,0,0.82},       % 字符串颜色
+    showstringspaces=false,                     % 不显示字符串内的空格
+    numbers=left,                               % 显示行号
+    numberstyle=\tiny\jetbrains,                    % 设置数字字体
+    basicstyle=\small\jetbrains,                    % 设置基本字体
+    captionpos=t,                               % title在上方(在bottom即为b)
+    frame=single,                               % 设置代码框形式
+    rulecolor=\color[rgb]{0.8,0.8,0.8},         % 设置代码框颜色
+}
+\usepackage{hyperref}
+\hypersetup{
+    hypertex=true,
+    colorlinks=true,
+    linkcolor=black,
+    anchorcolor=black,
+    citecolor=black,
+}
+
+\title{区块链实验三 实验报告}
+\author{PB19071405 王昊元}
+\date{2022 年 06 月 24 日}
+
+\begin{document}
+    \maketitle
+    \section{实验目的及要求}
+    \subsection{实验目的}
+    \begin{itemize}
+        \item 了解fabric上的基本配置
+        \item 在fabric网络中添加peer，并加入网络
+        \item 了解fabric上的基本证书和网络
+    \end{itemize}
+    \subsection{实验要求}
+    \begin{enumerate}
+        \item 使用CA服务器注册身份，并获得CA服务器颁发的身份证书
+        \item 在本地准备Peer节点启动所需要的文件，启动Peer节点
+        \item 将自己搭建的Peer节点加入通道mychannel
+    \end{enumerate}
+    \section{实验平台}
+    \begin{itemize}
+        \item OpenStack平台
+        \item Ubuntu 22.04 LTS (GNU/Linux 5.15.0-30-generic x86\_64)
+    \end{itemize}
+    \section{实验步骤}
+    \subsection{注册身份，并且获取证书}
+    注册部分按照实验文档进行环境变量配置及命令的运行，脚本如下：
+    \begin{lstlisting}[language=bash]
+to_tls_certfiles="/home/ubuntu/fabric/tls-ca/crypto/tls-ca-cert.pem"
+to_tls_ca_admin="/home/ubuntu/fabric/tls-ca/admin"
+to_hold_tlsmsp="/home/ubuntu/fabric/org1/peer2/tls-msp"
+PEERNAME="PB19071405"
+PEERSECRET="12345678"
+HOSTNAME=${PEERNAME}
+
+export FABRIC_CA_CLIENT_TLS_CERTFILES=${to_tls_certfiles}
+
+export FABRIC_CA_CLIENT_HOME=${to_tls_ca_admin}
+
+# 注册身份
+fabric-ca-client register --id.name ${PEERNAME} --id.secret ${PEERSECRET} --id.type peer -u https://172.16.4.35:7052
+
+# 获得对应的tls_msp
+# 存储tls_msp的位置
+export FABRIC_CA_CLIENT_MSPDIR=${to_hold_tlsmsp}
+fabric-ca-client enroll -u https://${PEERNAME}:${PEERSECRET}@172.16.4.35:7052 --enrollment.profile tls --csr.hosts ${HOSTNAME}
+
+# 注册成功后，可以把keystore下的文件存储为证书. 当然，你也可以手动将其重新命名.
+# mv tls-msp/keystore/*_sk tls-msp/keystore/key.pem
+# mv msp/keystore/*_sk msp/keystore/key.pem
+mv ${to_hold_tlsmsp}/keystore/*_sk ${to_hold_tlsmsp}/keystore/key.pem
+
+unset FABRIC_CA_CLIENT_TLS_CERTFILES
+unset FABRIC_CA_CLIENT_HOME
+unset FABRIC_CA_CLIENT_MSPDIR
+
+
+to_tls_certfiles="/home/ubuntu/fabric/org1/ca/crypto/ca-cert.pem"
+to_org_ca_admin="/home/ubuntu/fabric/org1/ca/admin"
+to_hold_msp="/home/ubuntu/fabric/org1/peer2/msp"
+
+export FABRIC_CA_CLIENT_TLS_CERTFILES=${to_tls_certfiles}
+
+export FABRIC_CA_CLIENT_HOME=${to_org_ca_admin}
+
+fabric-ca-client register --id.name ${PEERNAME} --id.secret ${PEERSECRET} --id.type peer -u https://172.16.4.35:7054 --csr.hosts ${HOSTNAME}
+
+# 存储msp的位置
+export FABRIC_CA_CLIENT_MSPDIR=${to_hold_msp}
+# 获得对应的msp
+fabric-ca-client enroll -u https://${PEERNAME}:${PEERSECRET}@172.16.4.35:7054
+
+mv ${to_hold_msp}/keystore/*_sk ${to_hold_msp}/keystore/key.pem
+
+unset FABRIC_CA_CLIENT_TLS_CERTFILES
+unset FABRIC_CA_CLIENT_HOME
+unset FABRIC_CA_CLIENT_MSPDIR
+
+unset PEERNAME
+unset PEERSECRET
+unset HOSTNAME
+    \end{lstlisting}
+    \subsection{启动Peer节点}
+    \subsubsection{创建配置文件}
+    先在相应的文件夹下创建{\jetbrains config.yaml}，不同的文件所对应的证书不同，修改为对应的证书即可。
+    例如在{\jetbrains admin/msp/config.yaml}中为
+    \begin{lstlisting}[]
+NodeOUs:
+  Enable: true
+  ClientOUIdentifier:
+    Certificate: cacerts/org1-ca-cert.pem
+    OrganizationalUnitIdentifier: client
+  PeerOUIdentifier:
+    Certificate: cacerts/org1-ca-cert.pem
+    OrganizationalUnitIdentifier: peer
+  AdminOUIdentifier:
+    Certificate: cacerts/org1-ca-cert.pem
+    OrganizationalUnitIdentifier: admin
+  OrdererOUIdentifier:
+    Certificate: cacerts/org1-ca-cert.pem
+    OrganizationalUnitIdentifier: orderer
+    \end{lstlisting}
+    \subsubsection{配置docker}
+    在{\jetbrains /home/ubuntu/fabric/org1/peer2}文件夹下创建{\jetbrains docker-compose.yaml}文件，
+    修改对应的信息为自己的信息，如{\jetbrains HOSTNAME}等，PEER端口为{\jetbrains 7051}，GOSSIP端口为{\jetbrains 7052}。
+    因命名格式与助教一致（主要反映在peer的命名上），所以其他信息不需要改动，核实一下签名证书等命名即可。
+
+    在{\jetbrains /home/ubuntu/fabric/org1/cli}文件夹下创建{\jetbrains docker-compose.yaml}文件，并修改信息。
+    \subsubsection{启动docker container}
+    分别在{\jetbrains /home/ubuntu/fabric/org1/peer2}和{\jetbrains /home/ubuntu/fabric/org1/cli}下
+    通过命令{\jetbrains docker-compose up -d}启动peer和cli对应的容器
+    （好像实验文档上没有说单独启动cli的容器，我配置完顺手就执行了，但好像也不影响，
+    从docker容器的角度看，都可以通过{\jetbrains docker exec -it cli-org1 /bin/bash}命令
+    在container中的运行bash）。
+    \subsection{添加通道}
+    由于{\jetbrains docker mount}的路径中不包括{\jetbrains mychannel.block}的路径，
+    所以我们需要将{\jetbrains mychannel.block}复制到{\jetbrains /home/ubuntu/fabric/org1/peer2}（被挂载的任何路径应该都可以）下
+
+    执行{\jetbrains docker exec -it cli-org1 /bin/bash}命令进入{\jetbrains cli}容器中的{\jetbrains bash}，
+    分别执行{\jetbrains export CORE\_PEER\_MSPCONFIGPATH=/etc/hyperledger/org1/admin/msp}和
+    {\jetbrains peer channel join -b mychannel.block}
+    （我理解的{\jetbrains mychannel.block}应该对应其路径，所以我先修改工作目录到相应位置才执行的），
+    最后执行{\jetbrains peer channel list}查看是否添加成功。
+    \section{实验结果}
+    第一次启动peer之后的log截图如下：
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./figs/start_peer.jpg}
+        \caption{\jetbrains docker logs PB19071405的结果（未添加channel）}
+    \end{figure}
+    添加channel后在{\jetbrains cli}中执行{\jetbrains peer channel list}的结果如下：
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./figs/join_channel1.jpg}
+        \caption{\jetbrains 添加通道后peer channel list的结果}
+    \end{figure}
+    再次查看peer容器的log，如下：
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{./figs/join_channel2.jpg}
+        \caption{添加通道后peer容器的日志}
+        \label{join_channel2}
+    \end{figure}
+    图\ref{join_channel2}为之后截图，可以看到下面已经产生了链上广播的一些信息（如果我没理解错的话），
+    从另一个方面验证了结果的正确性。
+    \section{实验总结及反馈}
+    \subsection{实验总结}
+    \begin{itemize}
+        \item 自己实际操作了Fabric的注册Peer、通过Docker启动再添加通道的过程，对Fabric的理解有了更深的理解。
+        \item 由于实验是在考试之后完成的，对于``考完就忘''的现状来说，也起到了很大的巩固知识的作用。
+    \end{itemize}
+    \subsection{实验反馈}
+    可能由于新课程新实验的缘故，实验文档有点杂乱的感觉。但正因为是新课程新实验，我才决定反馈一些信息给助教和老师。
+    \begin{itemize}
+        \item 提及比较细小的流程。例如对于{\jetbrains peer2}目录的创建，是需要我们手动创建的，
+        助教没有在文档中提及这一点，一直让我认为我注册的操作是有误的。
+        \item 上一点提到的例子或许是因为跟助教的实际操作有些许不同，导致这个目录必须我手动创建，
+        但这也意味着可能文档没有考虑全面（毕竟很多人做实验不可能一模一样，除非文档将每一步在哪里输什么看到什么像博客一样写出来，
+        不过那样实验就失去了一定的意义），这也很正常，只是希望助教可以从我们不同人的反馈中不断完善它。
+        例如，在注册所提供的命令重命名部分，助教默认了我们所指定的存储位置是在当前文件夹下的{\jetbrains msp}和{\jetbrains tls-msp}
+        （另外可能写两个是包括了两个部分的重命名，而非考虑两种命名情况，算是一个小失误吧），我在自己的脚本中引用了{\jetbrains to\_hold\_tlsmsp}变量
+        来规避这一问题。
+        \item 除此之外可能就是我认为的文档的一些小失误/小问题：
+        \begin{itemize}
+            \item 两次注册命令里变量有修改，但是说明部分没有修改
+            \item yaml文件注释使用双斜杠
+            \item 对docker文件挂载路径对应部分的说明其实可以用文字简单说明一下，我理解那个等号理解了很久
+            （也有可能是因为我很久没用docker而又不愿意看文档导致对docker不熟悉所以没反应过来），
+            对于不熟悉的同学可能理解上有困难。例如``Docker中xx路径''会被挂载/对应``磁盘中xxx路径''
+            （主要是理解了很久那个等号）
+        \end{itemize}
+    \end{itemize}
+    
+    此外，如果实验报告中体现出来我哪里理解有误，还希望助教指出。
+    
+    最后还很感谢助教提供了详细的操作命令及配置文件模板，帮助了我很多。
+\end{document}

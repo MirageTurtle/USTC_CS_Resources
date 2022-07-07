@@ -1,0 +1,157 @@
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{verbatim}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{fontspec}
+\newfontfamily\jetbrains{JetBrains Mono}
+\lstset{
+    breaklines,                                 % 自动将长的代码行换行排版
+    extendedchars=false,                        % 解决代码跨页时，章节标题，页眉等汉字不显示的问题
+    backgroundcolor=\color[rgb]{0.96,0.96,0.96},% 背景颜色
+    keywordstyle=\color{blue}\bfseries,         % 关键字颜色
+    identifierstyle=\color{black},              % 普通标识符颜色
+    commentstyle=\color[rgb]{0,0.6,0},          % 注释颜色
+    stringstyle=\color[rgb]{0.58,0,0.82},       % 字符串颜色
+    showstringspaces=false,                     % 不显示字符串内的空格
+    numbers=left,                               % 显示行号
+    numberstyle=\tiny\jetbrains,                    % 设置数字字体
+    basicstyle=\small\jetbrains,                    % 设置基本字体
+    captionpos=t,                               % title在上方(在bottom即为b)
+    frame=single,                               % 设置代码框形式
+    rulecolor=\color[rgb]{0.8,0.8,0.8},         % 设置代码框颜色
+}
+\usepackage{hyperref}
+\hypersetup{
+    hypertex=true,
+    colorlinks=true,
+    linkcolor=black,
+    anchorcolor=black,
+    citecolor=black,
+}
+
+\title{区块链实验二 实验报告}
+\author{PB19071405 王昊元}
+\date{2022 年 04 月 22 日}
+
+\begin{document}
+    \maketitle
+
+    \section{实验目的及要求}
+    \subsection{实验目的}
+    \begin{itemize}
+        \item 实现区块链上的POW证明算法
+        \item 理解区块链上的难度调整的作用
+    \end{itemize}
+    \subsection{实验要求}
+    \begin{itemize}
+        \item 完成{\jetbrains proofofwork.go}，包括{\jetbrains Run()}和{\jetbrains Validate()}两个函数
+        \item 完成比较 {\jetbrains targetBits} 的修改带来的计算次数上的变化情况，从5-15的变化
+    \end{itemize}
+    \section{实验原理}
+    \subsection{POW}
+    工作量证明（Proof-of-Work，PoW）是一种对应服务与资源滥用、或是拒绝服务攻击的经济对策。
+
+    一般要求用户进行一些耗时适当的复杂运算，并且答案能被服务方快速验算，以此耗用的时间、设备与能源做为担保成本，以确保服务与资源是被真正的需求所使用。
+    \subsection{区块链哈希} \label{blockchain hash}
+    比特币采用了哈希现金(hashcash)的工作量证明机制，对应流程如下：
+    \begin{enumerate}[label=\arabic*.]
+        \item 首先构建当前区块头，区块头包含上⼀个区块哈希值（32位），当前区块数据对应哈希（32位，即区块数据的merkle根），时间戳，区块难度，计数器（nonce）。
+        \item 添加计数器，作为随机数。计算器从0开始基础，每个回合加1。
+        \item 对于上述的数据来进行一个哈希的操作。
+        \item 判断结果是否满足计算的条件：如果符合，则得到了满足结果；如果没有符合，从2开始重新直接2、3、4步骤。
+    \end{enumerate}
+    \section{实验平台}
+    \begin{itemize}
+        \item 操作系统：macOS Big Sur 11.2.3
+        \item Go version: go1.17.8 darwin/amd64
+    \end{itemize}
+    \section{实验步骤}
+    \subsection{\jetbrains proofofwork.go}
+    \begin{itemize}
+        \item {\jetbrains Run()}
+        按照第\ref{blockchain hash}部分的算法，在 {\jetbrains nonce < maxNonce}时不断循环计算哈希，直到满足要求。
+        代码实现如下：
+        \begin{lstlisting}[language=go]
+func (pow *ProofOfWork) Run() (int, []byte) {
+	nonce := 0
+	var hash_int big.Int
+	var hash [32]byte
+
+	for nonce < maxNonce {
+		// data waiting for hash
+		data := bytes.Join(
+			[][]byte{
+				pow.block.PrevBlockHash,
+				pow.block.HashData(),
+				IntToHex(pow.block.Timestamp),
+				IntToHex(int64(pow.block.Bits)),
+				IntToHex(int64(nonce)),
+			},
+			[]byte{},
+		)
+		// compute hash and the corrsponding big int
+		hash = sha256.Sum256(data)
+		hash_int.SetBytes(hash[:])
+		// compute the target int (a number begin with pow.block.Bits zero in binary)
+		target := big.NewInt(1)
+		target.Lsh(target, uint(256 - pow.block.Bits))
+		// validate
+		if hash_int.Cmp(target) == -1 {
+			break
+		} else {
+			nonce += 1
+		}
+	}
+	// return nonce, pow.block.Hash
+	return nonce, hash[:]
+}
+        \end{lstlisting}
+        \item {\jetbrains Validate()}
+        直接判断区块头的哈希是否满足要求。
+        \begin{lstlisting}[language=go]
+func (pow *ProofOfWork) Validate() bool {
+	var hash_int big.Int
+	// compute the big int corresponding block hash
+	hash_int.SetBytes(pow.block.Hash[:])
+	// compute the target int
+	target := big.NewInt(1)
+	target.Lsh(target, uint(256 - pow.block.Bits))	
+	// validate
+	return (hash_int.Cmp(target) == -1)
+}
+        \end{lstlisting}
+    \end{itemize}
+    \section{实验结果}
+    向区块链中插入数据，结果如下：
+    \begin{figure}
+        \centering
+        \includegraphics*[width=0.7\textwidth]{./figs/pow_result1.jpg}
+        \includegraphics*[width=0.7\textwidth]{./figs/pow_result2.jpg}
+        \caption{实验结果截图}
+        \label{result screenshot}
+    \end{figure}
+
+    从图\ref{result screenshot}中可以看到，数据成功的被加密，{\jetbrains TargetBits}随着链长的增加逐渐增加，
+    整体上{\jetbrains Nonce}的大小也随着{\jetbrains TargetBits}的增加而增加，
+    {\jetbrains Pow}部分变为了{\jetbrains True}。
+
+    {\jetbrains Nonce}随{\jetbrains TargetBits}的变化如下图所示：
+    \begin{figure}
+        \centering
+        \includegraphics*[width=0.7\textwidth]{./figs/targetbits-nonce.jpg}
+        \caption{TargetBits - Nonce 图}
+        \label{targetbits-nonce}
+    \end{figure}
+    从图\ref{targetbits-nonce}中能看出由于{\jetbrains TargetBits}比较小时，符合要求的数较多，
+    导致{\jetbrains Nonce}会有波动，不过从整体上{\jetbrains Nonce}的大小还是随着{\jetbrains TargetBits}的增大而增大。
+\end{document}
