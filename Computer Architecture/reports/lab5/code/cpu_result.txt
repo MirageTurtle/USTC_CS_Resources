@@ -1,0 +1,36 @@
+testing: cpu1
+[0;32mSUCCESS![0mn: 0 Time cost: 5e-06s
+[0;32mSUCCESS![0mn: 1 Time cost: 3e-06s
+[0;32mSUCCESS![0mn: 2 Time cost: 3e-06s
+[0;32mSUCCESS![0mn: 3 Time cost: 7e-06s
+[0;32mSUCCESS![0mn: 4 Time cost: 3.8e-05s
+[0;32mSUCCESS![0mn: 5 Time cost: 0.000283s
+[0;32mSUCCESS![0mn: 6 Time cost: 0.002573s
+[0;32mSUCCESS![0mn: 7 Time cost: 0.018028s
+[0;32mSUCCESS![0mn: 8 Time cost: 0.206072s
+[0;32mSUCCESS![0mn: 9 Time cost: 2.04034s
+[0;32mSUCCESS![0mn: 10 Time cost: 42.2682s
+testing: cpu2
+[0;32mSUCCESS![0mn: 0 Time cost: 2.1e-05s
+[0;32mSUCCESS![0mn: 1 Time cost: 1.3e-05s
+[0;32mSUCCESS![0mn: 2 Time cost: 1.4e-05s
+[0;32mSUCCESS![0mn: 3 Time cost: 1.2e-05s
+[0;32mSUCCESS![0mn: 4 Time cost: 1.6e-05s
+[0;32mSUCCESS![0mn: 5 Time cost: 2.2e-05s
+[0;32mSUCCESS![0mn: 6 Time cost: 6.6e-05s
+[0;32mSUCCESS![0mn: 7 Time cost: 0.000239s
+[0;32mSUCCESS![0mn: 8 Time cost: 0.001937s
+[0;32mSUCCESS![0mn: 9 Time cost: 0.018129s
+[0;32mSUCCESS![0mn: 10 Time cost: 0.322516s
+testing: cpu3
+[0;32mSUCCESS![0mn: 0 Time cost: 0.000433s
+[0;32mSUCCESS![0mn: 1 Time cost: 0.000293s
+[0;32mSUCCESS![0mn: 2 Time cost: 0.000284s
+[0;32mSUCCESS![0mn: 3 Time cost: 4.2e-05s
+[0;32mSUCCESS![0mn: 4 Time cost: 2.9e-05s
+[0;32mSUCCESS![0mn: 5 Time cost: 3.5e-05s
+[0;32mSUCCESS![0mn: 6 Time cost: 3.4e-05s
+[0;32mSUCCESS![0mn: 7 Time cost: 0.000202s
+[0;32mSUCCESS![0mn: 8 Time cost: 0.001514s
+[0;32mSUCCESS![0mn: 9 Time cost: 0.01266s
+[0;32mSUCCESS![0mn: 10 Time cost: 0.14661s

@@ -1,0 +1,183 @@
+\documentclass[UTF8]{article}
+\usepackage{ctex}
+\usepackage{geometry}
+\geometry{a4paper, scale=0.8}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{bookmark}
+\usepackage{fontspec}
+\newfontfamily\jetbrains{JetBrains Mono}
+\usepackage{listings}
+\usepackage{color}
+\lstset{
+    breaklines,                                 % 自动将长的代码行换行排版
+    extendedchars=false,                        % 解决代码跨页时，章节标题，页眉等汉字不显示的问题
+    backgroundcolor=\color[rgb]{0.96,0.96,0.96},% 背景颜色
+    keywordstyle=\color{blue}\bfseries,         % 关键字颜色
+    identifierstyle=\color{black},              % 普通标识符颜色
+    commentstyle=\color[rgb]{0,0.6,0},          % 注释颜色
+    stringstyle=\color[rgb]{0.58,0,0.82},       % 字符串颜色
+    showstringspaces=false,                     % 不显示字符串内的空格
+    numbers=left,                               % 显示行号
+    numberstyle=\tiny\jetbrains,                    % 设置数字字体
+    basicstyle=\small\jetbrains,                    % 设置基本字体
+    captionpos=t,                               % title在上方(在bottom即为b)
+    frame=single,                               % 设置代码框形式
+    rulecolor=\color[rgb]{0.8,0.8,0.8},         % 设置代码框颜色
+}
+\usepackage{enumitem}
+
+\title{Verilog实验\ lab4实验报告}
+\author{PB19071405\ 王昊元}
+\date{2022 年 05 月 16 日}
+
+\begin{document}
+    \maketitle
+    \section{实验目的}
+    \begin{enumerate}
+        \item 实现BTB（Branch Target Buffer）和BHT（Branch History Table）两种动态分支预测器
+        \item 体会动态分支预测对流水线性能的影响
+    \end{enumerate}
+    \section{实验要求}
+    \begin{enumerate}
+        \item 在Lab3阶段二的RV32I Core基础上，实现BTB
+        \item 在阶段一的基础上实现BHT
+    \end{enumerate}
+    \section{实验环境}
+    \begin{itemize}
+        \item vlab
+        \item Vivado 2016.3
+    \end{itemize}
+    \section{实验核心实现}
+    \begin{enumerate}
+        \item 预测器主要的顶层设计逻辑是，在EX检查（检查部分的实现由一条语句在CPU最顶层实现）
+        是否为Br指令，只有当是Br指令且预测失败时，由真正的Br信号确定PC，
+        其余情况都由预测的信号确定（其余的情况包括不是Br指令和预测正确的情况）。
+        \begin{lstlisting}[language=verilog]
+always@(*)
+begin
+    if(need_update & (br_pred_out != is_br))
+    begin
+        branch_prediction_miss = 1;
+        // if branch prediction fail, it'll depend on true br signal
+        NPC = is_br ? PC_target : PC_out;
+    end
+    else
+    begin
+        branch_prediction_miss = 0;
+        NPC = br_pred_in ? PC_pred : PC_query + 4;
+    end
+end
+        \end{lstlisting}
+        \item 实现一个记录预测结果和PC+4的buffer，长度为2，为了辅助在EX阶段的判断
+        （存PC+4是为了在预测失败时且实际不跳转时使用）。
+        \item 实现BTB（1bit预测器），主要实现状态机的转换（如下），
+        是否命中、是否跳转及预测的PC等根据状态机的信息输出即可。
+        \begin{lstlisting}[language=verilog]
+integer i;
+always@(posedge clk or posedge rst)
+begin
+    if(rst)
+    begin
+        for(i = 0; i < SET_SIZE; i = i + 1)
+        begin
+            TAG[i] <= 0;
+            DATA[i] <= 0;
+            VALID[i] <= 0;
+            STATE[i] <= 0;
+        end
+    end
+    else if(need_update)
+    begin
+        TAG[addr_update] <= tag_update;
+        DATA[addr_update] <= update_data;
+        VALID[addr_update] <= 1'b1;
+        STATE[addr_update] <= is_br;
+    end
+end
+        \end{lstlisting}
+        \item 实现2bit BHT，主要实现状态机（参考课程ppt，00和01表示跳转，10和11表示不跳转，实现如下），
+        是否跳转由所处状态决定。
+        \begin{lstlisting}
+integer i;
+always@(posedge clk or posedge rst)
+begin
+    if(rst)
+    begin
+        for(i = 0; i < SET_SIZE; i = i + 1)
+        begin
+            STATE[i] <= 0;
+        end
+    end
+    else
+    begin
+        if(need_update)
+        begin
+            if(is_br)
+            begin
+                STATE[addr_update] <= (STATE[addr_update] == 0 ? 0 : STATE[addr_update] - 1);
+            end
+            else
+            begin
+                STATE[addr_update] <= (STATE[addr_update] == MAX_VAL ? MAX_VAL : STATE[addr_update] + 1);
+            end
+        end
+    end
+end
+        \end{lstlisting}
+    \end{enumerate}
+    \section{实验结果及分析}
+    \subsection{分析分支收益和分支代价}
+    \begin{itemize}
+        \item 分支收益：一次分支预测命中可带来2个时钟周期的收益
+        \item 分支代价：预测失败没有收益，代价为2个时钟周期（EX阶段检验，会影响IF和ID段已经执行的部分）
+    \end{itemize}
+    \subsection{统计未使用分支预测和使用分支预测的总周期数及差值}
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{ccccc}
+            \hline
+            ~ & btb.s & bht.s & QuickSort.s & MatMul.s \\
+            \hline
+            无分支预测 & 512 & 538 & 41859 & 297795 \\
+            BTB分支预测(差值) & 316(196) & 382(156) & 41932(-73) & 295727(2068) \\
+            BHT+BTB分支预测(差值) & 318(194) & 370(168) & 41156(703) & 294182(3613) \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \subsection{统计分支指令数目、动态分支预测正确次数和错误次数}
+    \begin{table}[H]
+        \centering
+        % \begin{tabular}{ccccc}
+        %     \hline
+        %     ~ & btb.s & bht.s & QuickSort.s & MatMul.s \\
+        %     \hline
+        %     分支指令数目 & 101 & 110 & 10198 & 4896 \\
+        %     BTB分支预测正确次数/错误次数 & 99/2 & 88/22 & 8176/2022 & 4077/819 \\
+        %     BHT+BTB分支预测正确次数/错误次数 & 98/3 & 95/15 & 8749/1449 & 4329/567 \\
+        %     \hline
+        % \end{tabular}
+        \begin{tabular}{ccccc}
+            \hline
+            ~ & btb.s & bht.s & QuickSort.s & MatMul.s \\
+            \hline
+            分支指令数目 & 101 & 110 & 10548 & 4896 \\
+            BTB分支预测正确次数/错误次数 & 99/2 & 88/22 & 8479/2069 & 4092/804 \\
+            BHT+BTB分支预测正确次数/错误次数 & 98/3 & 95/15 & 8761/1787 & 4350/546 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \subsection{对比不同策略并分析以上几点的关系}
+    \begin{enumerate}
+        \item 使用动态分支预测通常会带来正收益。
+        \item 但在某些情况下收益不高甚至会产生负收益。例如在QuickSort测试中，简单BTB预测反而会增大运行周期数。
+        \item BHT分支预测效果通常好于BTB。
+        \item 不同测试样例上不同分支结构带来的运行周期数优化效果差别显著，表明程序性能优化与程序本身（或者程序类型）有较强的相关性。
+    \end{enumerate}
+    \section{实验总结}
+    \begin{enumerate}
+        \item 在本次实验中，实现了BTB和BHT动态分支预测，对动态分支预测的原理也有了更深的理解。
+        \item 通过各种程序测试和指标分析，体会到动态分支预测对程序性能的实际优化效果。
+    \end{enumerate}
+\end{document}

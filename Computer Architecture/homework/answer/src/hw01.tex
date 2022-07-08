@@ -1,0 +1,65 @@
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{geometry}
+\geometry{a4paper,scale=0.8}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{HW01}
+\author{PB19071405\ 王昊元}
+
+
+\begin{document}
+    \pagestyle{empty}
+
+    \maketitle
+    \thispagestyle{empty}  % for maketitle
+
+    \begin{enumerate}[label=\textbf{EX\arabic*}]
+        % EX1
+        \item \begin{enumerate}[label=1.\arabic*]
+            \item $\text{CPI} = 2 \times 30\% + 3 \times 25\% + 2 \times 20\% + 4 \times 15\% + 4 \times 5\% + 2 \times 5\% = 2.65$
+            \item $T = T_{\text{CPU}} \times \text{CPI} \times \text{IC}$
+
+            \begin{itemize}
+                \item 对于A方案，CPI和IC不变，$T_{\text{CPU}}$变为原来的$0.9$倍，故$T$变为原来的$0.9$倍。
+                \item 对于B方案，$T_{\text{CPU}}$和IC不变，CPI变为$2.45 (= 2 \times 30\% + 3 \times 25\% + 2 \times 20\% + 3 \times 15\% + 3 \times 5\% + 2 \times 5\%)$，
+                变为原来的$\frac{49}{53}$倍，故$T$变为原来的$\frac{49}{53}$倍
+            \end{itemize}
+        
+            $0.9 < \frac{49}{53}$，故对于该标准测试程序，A方案优化效果更好。
+        \end{enumerate}
+        % EX2
+        \item 用$T$表示加速过后的执行时间。
+        \begin{enumerate}[label=2.\arabic*]
+
+            \item 当运算整体加速比达到3时，有
+
+            $$\frac{(1-\alpha)T + 20 \times \alpha T}{T} = 3$$
+        
+            得，
+        
+            $$\alpha = \frac{2}{19}$$
+
+            \item 被加速的运算在原执行时间中的比例$\beta$为
+            
+            $$\beta = \frac{20 \times \alpha T}{(1-\alpha)T + 20 \times \alpha T} = \frac{40}{57}$$
+
+            \item 加速方式最大加速比在运算均被加速时达到，即20倍。运算整体加速比能达到此加速方式最大加速比的一半时有，
+            
+            $$\frac{(1-\alpha)T + 20 \times \alpha T}{T} = \frac{20}{2}$$
+
+            得，
+
+            $$\alpha = \frac{9}{19}$$
+        \end{enumerate}
+        % EX3
+        \item \begin{enumerate}[label=3.\arabic*]
+            \item 在功率相同的情况下，运行时间为最低要求速度的50\%，则可以节省50\%的能量。
+            \item 频率变为原来的一半，整个计算过程时间变为原来的二倍，即运行时间与最低要求速度一样，
+            但电压为原来的一半，而$\text{功率}\propto\text{电压}^2$，所以，可以节省75\%的能量。
+        \end{enumerate}
+    \end{enumerate}
+
+\end{document}

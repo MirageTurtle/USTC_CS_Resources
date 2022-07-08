@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{geometry}
+\geometry{a4paper,scale=0.9}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+
+\title{HW03}
+\author{PB19071405\ 王昊元}
+\date{2022 年 04 月 18 日}
+
+\begin{document}
+    \maketitle
+
+    \begin{enumerate}[label=\arabic*.]
+        \item \begin{enumerate}[label=\alph*.]
+            \item \emph{包含式层次结构中，L1中数据总是出现在L2中。}
+            则L1中块缺失，可以分为缺失的块在L2中与不在L2中两种情况考虑。
+            \begin{enumerate}[label=\roman*.]
+                \item 缺失的块b0在L2中：L2将b0提供给L1，替换掉L1中的块b1，
+                如果b1是脏块（即数据被修改过），将它写入L2对应的块b1即可。
+                \item 缺失的块b0不在L2中：L2到内存中取，取回的块b0同时提供给L1和L2，
+                替换掉L1和L2中的块b1和块b2，如果b1是脏块，则将它写入L2中对应的块b1中，
+                如果b2也在L1中，则L1中b2需要被置失效，
+            \end{enumerate}
+            \item \emph{互斥式层次结构中，L1中数据绝不出现在L2中。}
+            则L1中块缺失，也可以分为缺失的块在L2中与不在L2中两种情况。
+            \begin{enumerate}[label=\roman*.]
+                \item 缺失的块b0在L2中：L2将b0提供给L1，替换掉L1中的块b1，
+                互斥式层次结构L1中的缓存缺失会导致L1和L2中的块互换，即b0和b1互换。
+                \item 缺失的块b0不在L2中：L1到内存中取，取回的块b0提供给L1，
+                替换掉L1中的块b1，再用b1替换掉L2中的块b2，如果b2是脏块，则将b2写回内存。
+            \end{enumerate}
+            \item 如i.和ii.所述。
+        \end{enumerate}
+        \item 要使系统从休眠中获益，则要使待机期间能量消耗高于进入和退出休眠状态所需的能量。
+        进入和退出休眠状态所需要的能量为
+        $$\eta = \frac{8\times2^{30}}{64}\times(2.56\mu J + 0.5nJ)\times2 \approx 687.328985088 J $$
+        则可以使系统收益的空闲时间至少
+        $$T = \frac{\eta}{P} = \frac{687.328985088 J}{1.6W} \approx 429.58061567999994s$$
+        \item 由题可知一下信息：
+        \begin{itemize}
+            \item CPU运行频率为 1.1GHz，1个cycle为$\frac{10}{11}$ns
+            \item 非访存指令CPI为1
+            \item 指令构成为 75\%非访存指令 + 20\%载入指令 + 5\%存储指令
+            \item Block Size: L1 I-cache: 32B, L1 D-cache: 16B, L2 cache: 64B
+            \item Miss rate: L1 I-cache: 2\%, L1 D-cache: 5\%, L2 cache: 1 - 80\% = 20\%
+            \item L1/L2 cache 传输位宽: 128b = 16B, L2/主存储器 传输位宽: 128b = 16B
+            \item block缺失传输次数: L1 I-cache: 2, L1 D-cache: 1, L2 cache: 4
+            \item 写停顿比例: 1 - 95\% = 5\%
+            \item 缺失延时: L1 cache: 15ns, L2 cache: 60ns
+            \item 传输周期: L1/L2: 1/266MHz = 3.75ns, L2/主存储器: 1/133MHz = 7.5ns
+            \item 脏块比例: 50\%
+        \end{itemize}
+        则我们可以计算出各个cache的缺失代价如下：
+        \begin{itemize}
+            \item L1 I-cache: $15ns + 3.75ns \times \frac{32B}{16B} = 22.5ns$
+            \item L1 D-cache: $15ns + 3.75ns \times \frac{16B}{16B} = 18.75ns$
+            \item 不考虑脏块的情况下，L2 cache: $60ns + 7.5ns \times \frac{64B}{16B} = 90ns$
+            \item 考虑脏块的情况下，L2 cache: $90ns \times (1 + 50\%) = 135ns$
+        \end{itemize}
+        \begin{enumerate}[label=\alph*.]
+            \item $2\% \times (22.5ns + 20\% \times (135ns)) = 0.99ns$
+            \item $5\% \times (18.75ns + 20\% \times (135ns)) = 2.2875ns$
+            \item 分两种情况讨论：
+            \begin{enumerate}[label=\roman*.]
+                \item 写入考虑了读取，消除的停顿是L1写回L2，直写法一定写回，由于考虑了读取，
+                则L2一定命中，而L2不需要写回主存储器（写回法命中时不直接写回），此时平均访问时间为
+                $2.29ns + 5\% \times 18.75ns = 3.2275ns$
+                \item 写入没有考虑读取，
+                \begin{itemize}
+                    \item 如果消除的停顿为到L1，则平均访存时间为
+                    $5\% \times (18.75 + 20\% \times 135ns) = 2.2875ns$
+                    \item 如果消除的停顿为到L2，则平均访存时间为
+                    $18.75ns + 5\% \times 20\% \times 135ns = 20.1ns$
+                \end{itemize}
+            \end{enumerate}
+            \item $\text{CPI} = \text{base CPI} + \text{inst CPI} + \text{load CPI} + \text{store CPI} = 1 + 0.99ns / \frac{10}{11}ns + 20\% \times 2.2875ns / \frac{10}{11}ns + 5\% \times 2.2875ns / \frac{10}{11}ns = 2.718$
+        \end{enumerate}
+    \end{enumerate}
+\end{document}

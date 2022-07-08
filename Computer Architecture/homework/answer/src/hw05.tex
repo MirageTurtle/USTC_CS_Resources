@@ -1,0 +1,146 @@
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{geometry}
+\geometry{a4paper,scale=0.9}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{graphics}
+\usepackage{fontspec}
+\newfontfamily\jetbrains{JetBrains Mono}
+\usepackage{color}
+\usepackage{listings}
+\lstset{
+    breaklines,                                 % 自动将长的代码行换行排版
+    extendedchars=false,                        % 解决代码跨页时，章节标题，页眉等汉字不显示的问题
+    % backgroundcolor=\color[rgb]{0.96,0.96,0.96},% 背景颜色
+    keywordstyle=\color{blue}\bfseries,         % 关键字颜色
+    identifierstyle=\color{black},              % 普通标识符颜色
+    commentstyle=\color[rgb]{0,0.6,0},          % 注释颜色
+    stringstyle=\color[rgb]{0.58,0,0.82},       % 字符串颜色
+    showstringspaces=false,                     % 不显示字符串内的空格
+    numbers=left,                               % 显示行号
+    numberstyle=\tiny\jetbrains,                % 设置数字字体
+    basicstyle=\small\jetbrains,                % 设置基本字体
+    captionpos=t,                               % title在上方(在bottom即为b)
+    frame=single,                               % 设置代码框形式
+    rulecolor=\color[rgb]{0.8,0.8,0.8},         % 设置代码框颜色
+}
+\usepackage{siunitx}
+\sisetup{
+    binary-units = true
+}
+
+\title{HW05}
+\author{PB19071405\ 王昊元}
+\date{2022 年 05 月 12 日}
+
+\begin{document}
+    \maketitle
+
+    \section*{EX1}
+    \begin{enumerate}
+        \item 在一次循环中，4次读浮点数，2次写浮点数，
+        执行6次浮点运算（其中包括4次乘法和2次加/减法），
+        一个单精度浮点数占用4个字节，
+        所以内核运算密度为
+        \[\frac{6}{(4 + 2) \times 4} = \frac{1}{4}\]
+        \item Strip Mining第一次的VL为\[\text{VL} = n \% \text{MVL} = 300 \% 64 = 44\]
+        则使用Strip Mining的VMIPS汇编代码如下：
+%         \begin{lstlisting}[language={[x86masm]Assembler}]
+%         li      $r1, 0          ;初始化low
+%         li      $VL, 44         ;设置向量长度，对应小于MVL的情况
+%         li      $r2, 0          ;j = 0
+% loop:   blt     4, $r2, end     ;while j <= 4, loop
+%         lv      $v1, a_re + $r1 ;load a_re
+%         lv      $v2, b_re + $r1 ;load b_re
+%         mulvv.s $v3, $v1, $v2   ;a_re * b_re
+%         lv      $v4, a_im + $r1 ;load a_im
+%         lv      $v5, b_im + $r1 ;load b_im
+%         mulvv.s $v6, $v4, $v5   ;a_im * a_im
+%         subvv.s $v3, $v3, $v6   ;c_re
+%         sv      $v3, c_re + $r1 ;store c_re
+%         mulvv.s $v3, $v1, $v5   ;a_re * b_im
+%         mulvv.s $v6, $v2, $v4   ;b_re * a_im
+%         addvv.s $v3, $v3, $v6   ;c_im
+%         sv      $v3, c_im + $r1 ;store c_im
+%         addi    $r1, $r1, $VL   ;low = low + VL，开始下一个向量
+%         li      $VL, $MVL       ;VL = MVL，将向量长度复位为最大向量长度
+%         addi    $r2, $r2, 1     ;j++
+%         j loop
+% end:    nop                     ;loop end
+%         \end{lstlisting}
+        \begin{lstlisting}[language={[x86masm]Assembler}]
+        li          $VL, 44         ; 设置向量长度，对应小于MVL的情况
+        li          $r1, 0          ; 初始化下标
+loop:   lv          $v1, a_re + $r1 ; load a_re
+        lv          $v3, b_re + $r1 ; load b_re
+        mulvv.s     $v5, $v1, $v3   ; a_re * b_re
+        lv          $v2, a_im + $r1 ; load a_im
+        lv          $v4, b_im + $r1 ; load b_im
+        mulvv.s     $v6, $v2, $v4   ; a_im * b_im
+        subvv.s     $v5, $v5, $v6   ; a_re * b_re - a_im * b_im
+        sv          $v5, c_re + $r1 ; store c_re
+        mulvv.s     $v5, $v1, $v4   ; a_re * b_im
+        mulvv.s     $v6, $v2, $v3   ; a_im * b_re
+        addvv.s     $v5, $v5, $v6   ; a_re * b_im + a_im * b_re
+        sv          $v5, c_im + $r1 ; store c_im
+        bne         $r1, 0, else    ; 是否首次循环
+        addi        $r1, $r1, #176  ; 首次循环
+        j loop                      ; 跳转下次循环
+else:   addi        $r1, $r1, #256  ; 非首次循环
+skip:   blt         $r1, 1200, loop ; 跳转下次循环
+        \end{lstlisting}
+        % \item Convoy划分及开销如下：
+        \item Convoy划分如下：
+        \begin{lstlisting}[language={[x86masm]Assembler}, numbers=left]
+mulvv.s     lv
+lv          mulvv.s
+subvv.s     sv      ; 链接
+mulvv.s     lv      ; load 下一个向量
+mulvv.s     lv      ; load 下一个向量
+addvv.s     sv
+        \end{lstlisting}
+        一次循环有6个Convoy，共循环5次，考虑最开始需要2个Convoy来lv最开始的向量，共
+        $6\times5 + 2 = 32$个Convoy。
+        下面计算时钟周期，基于以下几条规则：
+        \begin{itemize}
+            \item 一个Chime的时间为：向量长度 + 指令的启动时间
+            \item 考虑最开始的加载向量的Convoy（后续的向量在第4、5个Convoy中加载）
+            \item 考虑在向量长度为44时，不能lv长度为64的指令
+            （事实上，\emph{不确定}这条规则是否成立以及实际上是否可以避免，如果有问题，还望助教指正）
+            \item 考虑最后一次循环不需要再为下次循环lv向量
+        \end{itemize}
+        向量长度为44时：
+        \[44 \times 8 + 15\times6 + 8\times4 + 5\times2 = 484\]
+        向量长度为64时（最开始时仍需要单独lv，因为向量长度为44时没有lv）：
+        \[64\times(2+4\times6) + 15\times(6\times3 + 2) + 8\times(4\times4) + 5\times(2\times4) = 2132\]
+        故每个元素（复数结果值）需要$\frac{484 + 2132}{300} = 8.72$个时钟周期。
+        \item Convoy划分如下：
+        \begin{lstlisting}[language={[x86masm]Assembler}, numbers = left]
+mulvv.s
+mulvv.s
+subvv.s     sv
+mulvv.s
+mulvv.s     lv
+addvv.s     sv  lv  lv  lv ; load 下一个向量
+        \end{lstlisting}
+        一次循环有6个Convoy，共循环5次，考虑最开始需要2个Convoy来lv最开始的向量，共
+        $6\times5 + 2 = 32$个Convoy。
+        向量长度为44时：
+        \[44 \times 8 + 15\times4 + 8\times4 + 5\times2 = 454\]
+        向量长度为64时（最开始时仍需要单独lv，因为向量长度为44时没有lv）：
+        \[64\times(2+4\times6) + 15\times(4\times3 + 2) + 8\times(4\times4) + 5\times(2\times4) = 2042\]
+        故每个元素（复数结果值）需要$\frac{454 + 2042}{300} = 8.32$个时钟周期。
+    \end{enumerate}
+    \section*{EX2}
+    \begin{enumerate}
+        \item 峰值单精度浮点吞吐量为
+        \[\SI{1.5}{\giga\hertz} \times 16 \times 16 = \SI{384}{GFLOP\per\second}\]
+        \item 考虑每个单精度运算需要2个读操作和1个写操作，需要访问$(2 + 1)\times 4 = 12$个字节，需要
+        \[\SI{12}{\byte\per FLOP} \times \SI{384}{GFLOP\per\second} = \SI{4608}{{\giga\byte}\per\second}\]
+        而$\SI{4608}{{\giga\byte}\per\second} > \SI{100}{{\giga\byte}\per\second}$，因此吞吐量不可持续。
+    \end{enumerate}
+\end{document}
