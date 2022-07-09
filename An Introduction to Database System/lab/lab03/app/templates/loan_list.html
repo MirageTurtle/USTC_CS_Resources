@@ -1,0 +1,195 @@
+{% extends 'layout.html' %}
+
+{% block title %}Loan{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div style="margin-bottom: 10px">
+
+        <a class="btn btn-success" href="/loan/add">
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            Create
+        </a>
+
+        <div style="float: right;width: 800px;">
+            <form method="post">
+                <div style="float: right;width: 70px;">
+
+                    <input type="submit" value="Search" class="btn btn-success">
+
+                </div>
+
+                <div style="float: right;width: 10px;">
+                    &nbsp
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Pay_already" class="form-control"
+                               placeholder="Pay_already">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Loan_Status" class="form-control"
+                               placeholder="Loan_Status">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Loan_Amount" class="form-control"
+                               placeholder="Loan_Amount">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Bank_Name" class="form-control"
+                               placeholder="Bank_Name">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Loan_ID" class="form-control"
+                               placeholder="Loan_ID">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Loan
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Loan_ID</th>
+                <th>Bank_Name</th>
+                <th>Loan_Amount</th>
+                <th>Loan_Status</th>
+                <th>Pay_already</th>
+                <th>Opening_Date</th>
+                <th>Operation</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in loan_list %}
+            <tr>
+                <td>{{ obj.Loan_ID }}</td>
+                <td>{{ obj.Bank_Name }}</td>
+                <td>{{ obj.Loan_Amount }}</td>
+                <td>{{ obj.Loan_Status }}</td>
+                <td>{{ obj.Pay_already }}</td>
+                <td>{{ obj.Opening_Date }}</td>
+                <td>
+                    <a class="btn btn-danger btn-sm" href="/loan/delete/{{ obj.Loan_ID }}">
+                        delete<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="error1"></div>
+<script>
+    const error1 = '{{ error1 }}'
+    const error1_html = "<div class=\"container\" style=\"height: 70px\">" +
+        "<div class=\"alert alert-danger alert-dismissible\" role=\"alert\">\n" +
+        "            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span\n" +
+        "                    aria-hidden=\"true\">&times;</span></button>\n" +
+        "            <strong>Error!</strong> {{error1}} " +
+        "        </div>" +
+        "<div style='position: relative; left: 480px; top: -63px'>" +
+        "<a class=\"btn btn-info\" href=\"/loan/list\">\n" +
+
+        "            Return\n" +
+        "        </a>" +
+        "        </div>" +
+        "        </div>"
+    ;
+
+    if (error1)
+        document.getElementById('error1').innerHTML = error1_html;
+</script>
+
+
+<div class="container">
+    <div style="margin-bottom: 10px">
+        <a class="btn btn-success" href="/pay/add">
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            Create
+        </a>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Loan-Pay
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Client_ID</th>
+                <th>Loan_ID</th>
+                <th>Pay_ID</th>
+                <th>Pay_Amount</th>
+                <th>Pay_Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in pay_list %}
+            <tr>
+                <td>{{ obj.Client_ID }}</td>
+                <td>{{ obj.Loan_ID }}</td>
+                <td>{{ obj.Pay_ID }}</td>
+                <td>{{ obj.Pay_Amount }}</td>
+                <td>{{ obj.Pay_Date }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

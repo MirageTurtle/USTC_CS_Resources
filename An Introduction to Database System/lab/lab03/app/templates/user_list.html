@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+
+{% block title %}User List{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div style="margin-bottom: 10px">
+
+        <a class="btn btn-success" href="/user/add">
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            Create
+        </a>
+
+        <div style="float: right;width: 400px;">
+            <form method="post">
+
+                <div style="float: right;width: 70px;">
+                    <input type="submit" value="Search" class="btn btn-success">
+                </div>
+
+                <div style="float: right;width: 200px;">
+                    <div class="input-group">
+                        <input type="text" name="Username" class="form-control" placeholder="Search for Username">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Users
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Operation</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in user_list %}
+            <tr>
+                <td>{{ obj.Username }}</td>
+                <td>{{ obj.Password }}</td>
+                <td>
+
+                    <a class="btn btn-primary btn-sm" href="/user/edit/{{ obj.Username }}">
+                        edit<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </a>
+
+                    <a class="btn btn-danger btn-sm" href="/user/delete/{{ obj.Username }}">
+                        delete<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

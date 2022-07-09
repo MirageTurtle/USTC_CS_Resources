@@ -1,0 +1,172 @@
+{% extends 'layout.html' %}
+
+{% block title %}Client{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div style="margin-bottom: 10px">
+
+        <a class="btn btn-success" href="/client/add">
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            Create
+        </a>
+
+        <div style="float: right;width: 800px;">
+            <form method="post">
+                <div style="float: right;width: 70px;">
+
+                    <input type="submit" value="Search" class="btn btn-success">
+
+                </div>
+
+                <div style="float: right;width: 10px;">
+                    &nbsp
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Client_Address" class="form-control" placeholder="Client_Address">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Client_Tel" class="form-control" placeholder="Client_Tel">
+                    </div>
+                </div>
+
+               <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Client_Name" class="form-control" placeholder="Client_Name">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Client_ID" class="form-control" placeholder="Client_ID">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Client
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Client_ID</th>
+                <th>Client_Name</th>
+                <th>Client_Tel</th>
+                <th>Client_Address</th>
+                <th>Contact_Name</th>
+                <th>Contact_Email</th>
+                <th>Contact_Tel</th>
+                <th>Relation</th>
+                <th>Operation</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in client_list %}
+            <tr>
+                <td>{{ item.Client_ID }}</td>
+                <td>{{ item.Client_Name }}</td>
+                <td>{{ item.Client_Tel }}</td>
+                <td>{{ item.Client_Address }}</td>
+                <td>{{ item.Contact_Name }}</td>
+                <td>{{ item.Contact_Email }}</td>
+                <td>{{ item.Contact_Tel }}</td>
+                <td>{{ item.Relation }}</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/client/edit/{{ item.Client_ID }}">
+                        edit<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </a>
+
+                    <a class="btn btn-danger btn-sm" href="/client/delete/{{ item.Client_ID }}">
+                        delete<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </a>
+
+                    <a class="btn btn-success btn-sm" href="/account/add/{{ item.Client_ID }}">
+                        create account<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+                    </a>
+
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="container">
+    <div id="error"></div>
+    <script>
+        const error = '{{ error }}'
+        const error_html = "<div class=\"alert alert-danger alert-dismissible\" role=\"alert\">\n" +
+            "            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span\n" +
+            "                    aria-hidden=\"true\">&times;</span></button>\n" +
+            "            <strong>Error!</strong> " + error +
+            "        </div>";
+
+        if (error)
+            document.getElementById('error').innerHTML = error_html;
+    </script>
+</div>
+
+<!-- <div class="container">
+    <div id="error1"></div>
+    <script>
+        const error1 = '{{ error1 }}'
+        const error1_html = "<div class=\"alert alert-danger alert-dismissible\" role=\"alert\">\n" +
+            "            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span\n" +
+            "                    aria-hidden=\"true\">&times;</span></button>\n" +
+            "            <strong>Error!</strong> " + error1 +
+            "        </div>";
+
+        if (error1)
+            document.getElementById('error1').innerHTML = error1_html;
+    </script>
+</div>
+
+<div class="container">
+    <div id="error2"></div>
+    <script>
+        const error2 = '{{ error2 }}'
+        const error2_html = "<div class=\"alert alert-danger alert-dismissible\" role=\"alert\">\n" +
+            "            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span\n" +
+            "                    aria-hidden=\"true\">&times;</span></button>\n" +
+            "            <strong>Error!</strong> " + error2 +
+            "        </div>";
+
+        if (error2)
+            document.getElementById('error2').innerHTML = error2_html;
+    </script>
+</div> -->
+
+{% endblock %}

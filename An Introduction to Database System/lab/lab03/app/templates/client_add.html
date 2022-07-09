@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block title %}Client{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"> Create a new client </h3>
+        </div>
+        <div class="panel-body">
+            <form method="post">
+
+                <div class="form-group">
+                    <label>Client_ID</label>
+                    <input type="text" class="form-control" placeholder="Client_ID" name="Client_ID" required>
+                </div>
+                <div id="error_client_id"></div>
+                <script>
+                    var error_html = "<div class=\"alert alert-danger alert-dismissible\" role=\"alert\">\n" +
+                        "            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span\n" +
+                        "                    aria-hidden=\"true\">&times;</span></button>\n" +
+                        "            <strong>Error!</strong> {{error_msg}} " +
+                        "        </div>";
+                    var error_msg = '{{ error_msg }}';
+                    if (error_msg)
+                        document.getElementById('error_client_id').innerHTML = error_html;
+                </script>
+
+                <div class="form-group">
+                    <label>Client_Name</label>
+                    <input type="text" class="form-control" placeholder="Client_Name" name="Client_Name" required>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Client_Tel</label>
+                    <input type="text" class="form-control" placeholder="Client_Tel" name="Client_Tel">
+                </div>
+
+                <div class="form-group">
+                    <label>Client_Address</label>
+                    <input type="text" class="form-control" placeholder="Client_Address" name="Client_Address">
+                </div>
+
+
+                <div class="form-group">
+                    <label>Contact_Name</label>
+                    <input type="text" class="form-control" placeholder="Contact_Name" name="Contact_Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact_Email</label>
+                    <input type="email" class="form-control" placeholder="Contact_Email" name="Contact_Email">
+                </div>
+
+                <div class="form-group">
+                    <label>Contact_Tel</label>
+                    <input type="tel" class="form-control" placeholder="Contact_Tel" name="Contact_Tel">
+                </div>
+
+                <div class="form-group">
+                    <label>Relation</label>
+                    <input type="text" class="form-control" placeholder="Relation" name="Relation">
+                </div>
+
+                <button type="submit" class="btn btn-success">submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

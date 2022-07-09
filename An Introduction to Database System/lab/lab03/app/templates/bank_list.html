@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block title %}Bank{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Bank
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Bank_Name</th>
+                <th>City</th>
+                <th>Assets</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in bank_list %}
+            <tr>
+                <td>{{ item.Bank_Name }}</td>
+                <td>{{ item.City }}</td>
+                <td>{{ item.Assets }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block title %}Update Account{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"> Update client account information</h3>
+        </div>
+        <div class="panel-body">
+            <form method="post">
+
+                <!-- <div class="form-group">
+                    <label>New_Visited_Date</label>
+                    <input type="date" class="form-control" placeholder="New_Visited_Date" name="Visited_Date">
+                </div> -->
+
+                <div class="form-group">
+                    <label>Account_Type</label>
+                    <select class="form-control" name="Account_Type">
+                        <option value="Saving">Saving</option>
+                        <option value="Cheque">Cheque</option>
+                    </select>
+                </div>
+
+                <br>
+                <p>If you need to update a saving account, please fill out the New_Interest_Rate and New_Currency_Type
+                    bellow.</p>
+
+                <div class="form-group">
+                    <label>New_Interest_Rate</label>
+                    <input type="text" class="form-control" placeholder="New_Interest_Rate" name="Interest_Rate">
+                </div>
+
+                <div class="form-group">
+                    <label>New_Currency_Type</label>
+                    <input type="text" class="form-control" placeholder="New_Currency_Type" name="Currency_Type">
+                </div>
+
+                <br>
+                <p>Else if you need to update a cheque account, please fill out the New_Overdraft bellow.</p>
+
+                <div class="form-group">
+                    <label>New_Overdraft</label>
+                    <input type="text" class="form-control" placeholder="New_Overdraft" name="Overdraft">
+                </div>
+
+                <button type="submit" class="btn btn-success">submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

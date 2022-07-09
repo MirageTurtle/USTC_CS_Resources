@@ -1,0 +1,280 @@
+{% extends 'layout.html' %}
+
+{% block title %}Business{% endblock %}
+
+{% block content %}
+<!-- <div id="main" style="width: 600px;height:400px;"></div>
+<script type="text/javascript">
+    const myChart = echarts.init(document.getElementById('main'));
+    const option = {
+        xAxis: {
+            data: ['A', 'B', 'C', 'D', 'E']
+        },
+        yAxis: {},
+        series: [
+            {
+                type: 'bar',
+                data: [10, 22, 28, 43, 49],
+                barWidth: '50%',  //柱条宽度
+                barMinHeight: '20',  //柱条最小高度
+                showBackground: true,  //背景颜色
+                backgroundStyle: {
+                    color: 'rgba(213,124,124,0.8)'
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script> -->
+
+<div style="position:relative; left: 200px">
+    <h3>List of bank_account_year</h3>
+</div>
+{% for bank in bank_account_year %}
+<div class="container">
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{ bank }}
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year</th>
+                <th>#Account</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in bank_account_year[bank] %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ bank_account_year[bank][item] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endfor %}
+
+
+<div style="position:relative; left: 200px">
+    <h3>List of bank_balance_year</h3>
+</div>
+{% for bank in bank_balance_year %}
+<div class="container">
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{ bank }}
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year</th>
+                <th>Balance</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in bank_balance_year[bank] %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ bank_balance_year[bank][item] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endfor %}
+
+<div style="position:relative; left: 200px">
+    <h3>List of bank_balance_quarter</h3>
+</div>
+{% for bank in bank_balance_quarter %}
+<div class="container">
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{ bank }}
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year-Quarter</th>
+                <th>Balance</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in bank_balance_quarter[bank] %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ bank_balance_quarter[bank][item] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endfor %}
+
+<div style="position:relative; left: 200px">
+    <h3>List of bank_balance_month</h3>
+</div>
+{% for bank in bank_balance_month %}
+<div class="container">
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{ bank }}
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year-Month</th>
+                <th>Balance</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in bank_balance_month[bank] %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ bank_balance_month[bank][item] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endfor %}
+
+<div style="position:relative; left: 200px">
+    <h3>List of loan_year</h3>
+</div>
+{% for bank in loan_balance_year %}
+<div class="container">
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{ bank }}
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year</th>
+                <th>Loan_Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in loan_balance_year[bank] %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ loan_balance_year[bank][item] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endfor %}
+
+<div style="position:relative; left: 200px">
+    <h3>List of loan_quarter</h3>
+</div>
+{% for bank in loan_balance_quarter %}
+<div class="container">
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{ bank }}
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year-Quarter</th>
+                <th>Loan_Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in loan_balance_quarter[bank] %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ loan_balance_quarter[bank][item] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endfor %}
+
+<div style="position:relative; left: 200px">
+    <h3>List of loan_month</h3>
+</div>
+{% for bank in loan_balance_month %}
+<div class="container">
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            {{ bank }}
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year-Month</th>
+                <th>Loan_Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in loan_balance_month[bank] %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ loan_balance_month[bank][item] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endfor %}
+
+{% endblock %}

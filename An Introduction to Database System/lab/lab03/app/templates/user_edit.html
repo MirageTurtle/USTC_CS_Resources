@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block title %}User{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"> Update your new password </h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+
+
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="text" class="form-control" placeholder="Password" name="password"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

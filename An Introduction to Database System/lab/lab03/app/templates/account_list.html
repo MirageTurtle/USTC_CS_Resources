@@ -1,0 +1,192 @@
+{% extends 'layout.html' %}
+
+{% block title %}Data of Account{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Own
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Client_ID</th>
+                    <th>Visited_Date</th>
+                    <th>Account_ID</th>
+                    <th>Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in own_list %}
+                <tr>
+                    <td>{{ item.Client_ID }}</td>
+                    <td>{{ item.Visited_Date }}</td>
+                    <td>{{ item.Account_ID }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="/account/edit/{{ item.Account_ID }}">
+                            edit<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </a>
+
+                        <a class="btn btn-danger btn-sm" href="/account/delete/{{ item.Account_ID }}">
+                            delete<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="container">
+
+    <div style="margin-bottom: 45px">
+        <div style="float: right;width: 800px;">
+            <form method="post">
+                <div style="float: right;width: 70px;">
+
+                    <input type="submit" value="Search" class="btn btn-success">
+
+                </div>
+
+                <div style="float: right;width: 10px;">
+                    &nbsp
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Balance" class="form-control"
+                            placeholder="Balance">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Bank_Name" class="form-control"
+                            placeholder="Bank_Name">
+                    </div>
+                </div>
+
+                <div style="float: right;width: 20px;">
+                    <div style="position: relative; top: 5px; left: 6px">
+                        &
+                    </div>
+                </div>
+
+                <div style="float: right;width: 100px;">
+                    <div class="input-group">
+                        <input type="text" style="border-radius: 5px" name="Account_ID" class="form-control"
+                            placeholder="Account_ID">
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+    </div>
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Account
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Account_ID</th>
+                    <th>Bank_Name</th>
+                    <th>Balance</th>
+                    <th>Opening_Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in account_list %}
+                <tr>
+                    <td>{{ item.Account_ID }}</td>
+                    <td>{{ item.Bank_Name }}</td>
+                    <td>{{ item.Balance }}</td>
+                    <td>{{ item.Opening_Date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Cheque_Account
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Account_ID</th>
+                    <th>Overdraft</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cheque_account_list %}
+                <tr>
+                    <td>{{ item.Account_ID }}</td>
+                    <td>{{ item.Overdraft }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Saving_Account
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Account_ID</th>
+                    <th>Interest_Rate</th>
+                    <th>Currency_Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in saving_account_list %}
+                <tr>
+                    <td>{{ item.Account_ID }}</td>
+                    <td>{{ item.Interest_Rate }}</td>
+                    <td>{{ item.Currency_Type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

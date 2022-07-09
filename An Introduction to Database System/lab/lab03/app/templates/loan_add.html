@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+
+{% block title %}Loan{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"> Create a new Loan </h3>
+        </div>
+        <div class="panel-body">
+            <form method="post">
+
+                <div class="form-group">
+                    <label>Loan_ID</label>
+                    <input type="text" class="form-control" placeholder="Loan_ID" name="Loan_ID" required>
+                </div>
+
+                <div id="error_loan_id"></div>
+                <script>
+                    const error_loan_id_html = "<div class=\"alert alert-danger alert-dismissible\" role=\"alert\">\n" +
+                        "            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span\n" +
+                        "                    aria-hidden=\"true\">&times;</span></button>\n" +
+                        "            <strong>Error!</strong> {{error_loan_id}} " +
+                        "        </div>";
+                    const error_loan_id = '{{error_loan_id}}';
+                    if (error_loan_id)
+                        document.getElementById('error_loan_id').innerHTML = error_loan_id_html;
+                </script>
+
+                <div class="form-group">
+                    <label>Bank_Name</label>
+                    <input type="text" class="form-control" placeholder="Bank_Name" name="Bank_Name" required>
+                    <!-- <label for="banks">Bank_Name</label>
+                    <select class="form-control" name="Bank_Name" id="banks">
+                        {% for obj in bank_list %}
+                        <option value="{{ obj.Bank_Name }}">{{ obj.Bank_Name }}</option>
+                        {% endfor %}
+                    </select> -->
+                </div>
+                <div id="error_bank_name"></div>
+                <script>
+                    const error_bank_name_html = "<div class=\"alert alert-danger alert-dismissible\" role=\"alert\">\n" +
+                        "            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span\n" +
+                        "                    aria-hidden=\"true\">&times;</span></button>\n" +
+                        "            <strong>Error!</strong> {{error_loan_id}} " +
+                        "        </div>";
+                    const error_bank_name = '{{ error_bank_name }}';
+                    if(error_bank_name)
+                        document.getElementById("error_bank_name").innerHTML = error_bank_name_html;
+                </script>
+
+                <div class="form-group">
+                    <label>Loan_Amount</label>
+                    <input type="text" class="form-control" placeholder="Loan_Amount" name="Loan_Amount" required>
+                </div>
+
+                <button type="submit" class="btn btn-success">submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

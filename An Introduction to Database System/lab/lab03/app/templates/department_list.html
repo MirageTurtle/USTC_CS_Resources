@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block title %}Department{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            List of Department
+        </div>
+
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Department_ID</th>
+                <th>Department_Name</th>
+                <th>Department_Type</th>
+                <th>Manager_ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in department_list %}
+            <tr>
+                <td>{{ item.Department_ID }}</td>
+                <td>{{ item.Department_Name }}</td>
+                <td>{{ item.Department_Type }}</td>
+                <td>{{ item.Manager_ID }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

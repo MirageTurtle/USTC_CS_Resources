@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block title %}Employee{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div style="margin-bottom: 10px">
+
+            <a class="btn btn-success" href="/employee/add">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                Create
+            </a>
+    
+            <!-- <div style="float: right;width: 400px;">
+                <form method="post">
+    
+                    <div style="float: right;width: 70px;">
+                        <input type="submit" value="Search" class="btn btn-success">
+                    </div>
+    
+                    <div style="float: right;width: 200px;">
+                        <div class="input-group">
+                            <input type="text" name="Username" class="form-control" placeholder="Search for Username">
+                        </div>
+                    </div>
+    
+                </form>
+            </div> -->
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                List of Employee
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Employee_ID</th>
+                    <th>Employee_Name</th>
+                    <th>Bank_Name</th>
+                    <th>Department_ID</th>
+                    <th>Employee_Tel</th>
+                    <th>Employee_Address</th>
+                    <th>Work_Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in employee_list %}
+                    <tr>
+                        <td>{{ item.Employee_ID }}</td>
+                        <td>{{ item.Employee_Name }}</td>
+                        <td>{{ item.Bank_Name }}</td>
+                        <td>{{ item.Department_ID }}</td>
+                        <td>{{ item.Employee_Tel }}</td>
+                        <td>{{ item.Employee_Address }}</td>
+                        <td>{{ item.Work_Date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

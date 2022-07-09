@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+
+{% block title %}Client{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"> Update Client information </h3>
+        </div>
+        <div class="panel-body">
+            <form method="post">
+
+
+                <div class="form-group">
+                    <label>New Client_Name</label>
+                    <input type="text" class="form-control" placeholder="New Client_Name" name="Client_Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>New Client_Tel</label>
+                    <input type="text" class="form-control" placeholder="New Client_Tel" name="Client_Tel">
+                </div>
+
+                <div class="form-group">
+                    <label>New Client_Address</label>
+                    <input type="text" class="form-control" placeholder="New Client_Address" name="Client_Address">
+                </div>
+
+
+                <div class="form-group">
+                    <label>New Contact_Name</label>
+                    <input type="text" class="form-control" placeholder="New Contact_Name" name="Contact_Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>New Contact_Email</label>
+                    <input type="email" class="form-control" placeholder="New Contact_Email" name="Contact_Email">
+                </div>
+
+                <div class="form-group">
+                    <label>New Contact_Tel</label>
+                    <input type="text" class="form-control" placeholder="New Contact_Tel" name="Contact_Tel">
+                </div>
+
+                <div class="form-group">
+                    <label>New Relation</label>
+                    <input type="text" class="form-control" placeholder="New Relation" name="Relation">
+                </div>
+
+                <button type="submit" class="btn btn-success">submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
