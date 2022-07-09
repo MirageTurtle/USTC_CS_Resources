@@ -7,6 +7,7 @@ This is a repo with CS course resources for USTCer.
 - 人工智能 Fundamental of Artificial Intelligence
 - 区块链技术与应用 Blockchain Technology and Application
 - 计算机体系结构 Computer Architecture
+- 数据库系统及应用 An Introduction to Database System
 
 ## 声明
 
