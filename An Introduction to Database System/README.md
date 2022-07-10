@@ -6,7 +6,7 @@
 
 ## 致谢
 
-特别感谢[Heyan-Lanan](https://github.com/Heyan-Lanan)的[实验三实现](https://github.com/Heyan-Lanan/2022-Database-System/tree/main/Lab3)。
+特别感谢[Heyan-Lanan](https://github.com/Heyan-Lanan)对实验三的帮助。
 
 ## `homework`的说明
 
