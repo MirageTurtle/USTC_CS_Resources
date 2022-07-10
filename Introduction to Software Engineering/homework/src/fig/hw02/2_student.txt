@@ -1,0 +1,21 @@
+@startuml
+
+actor 学生
+entity 登陆系统
+entity 学生界面
+
+activate 学生
+学生 -> 登陆系统: 登陆
+activate 登陆系统
+登陆系统 -> 登陆系统: 输入账号密码
+登陆系统 -> 学生界面: 登陆成功
+activate 学生界面
+学生界面 -> 学生界面: 查看所有课程以及课程对应的作业
+学生界面 -> 学生界面: 选择对应的课程上传对应的作业
+学生界面 -> 登陆系统: 退出
+deactivate 学生界面
+deactivate 登陆系统
+登陆系统 -> 学生: 退出登陆系统
+deactivate 学生
+
+@enduml

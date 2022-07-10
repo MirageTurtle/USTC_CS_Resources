@@ -1,0 +1,57 @@
+@startuml
+
+class 登陆系统 {
+    + 登陆(用户)
+}
+
+class 用户 {
+    - 账号: str
+    - 密码: str
+    
+    + 修改信息()
+    + 退出()
+}
+
+登陆系统 ..> 用户
+
+class 学生 {
+    - 学号: str
+    - 姓名: str
+    - 性别: int/str/bool
+    - 年级: int
+    - 班级: int
+    - 所选课程: list of 课程
+    - 成绩: int
+
+    + 上交作业(课程)
+}
+
+class 老师 {
+    - 工号: str
+    - 姓名: str
+    - 性别: int/str/bool
+    - 所授课程: list of 课程
+    
+    + 批改作业(课程)
+}
+
+学生 ..> 课程
+老师 ..> 课程
+用户 <|-- 学生
+用户 <|-- 老师
+
+class 课程 {
+    - 课程号: str
+    - 课程名: str
+    - 授课老师: list of 老师
+    - 作业: 作业
+}
+
+class 作业 {
+    - 内容: str
+    - 截止日期: date
+}
+
+课程 o-- 作业
+
+@enduml

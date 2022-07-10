@@ -1,0 +1,94 @@
+@startuml
+skinparam linetype ortho
+
+rectangle "Control" {
+    interface GameObjectObserver {
+        + update(GameObject): void
+    }
+
+    class ViewController {
+        + startScreen(): void
+        + read(): void
+        + update(GameObject): void
+    }
+
+    GameObjectObserver <|.down. "Controller" ViewController
+}
+
+rectangle "View" {
+    class SwingTerminal {
+
+    }
+}
+
+ViewController "1" -down- "1" SwingTerminal : "view"
+
+rectangle "Model" {
+    abstract GameObject {
+        + addObserver(GameObjectObserver): void
+        + removeObserver(GameObjectObserver): void
+        + notifyObserver(): void
+        + getChanges(): List<(Char, Coordinate)>
+    }
+
+    class Field {
+        - width: int
+        - height: int
+        - {field} changes: List<(Char, Coordinate)>
+
+        + setDirection(Direction): void
+        + isAlive(): boolean
+        + didEat(List<Coordinate>): boolean
+        + start(): void
+
+        + addObserver(GameObjectObserver): void
+        + removeObserver(GameObjectObserver): void
+        + notifyObserver(): void
+        + getChanges(): List<(Char, Coordinate)>
+        + update(GameObject): void
+    }
+
+    class Food {
+        - displayChar: char
+
+        + eat(List<Coordinate>): void
+
+        + addObserver(GameObjectObserver): void
+        + removeObserver(GameObjectObserver): void
+        + notifyObserver(): void
+        + getChanges(): List<(Char, Coordinate)>
+    }
+
+    class Snake {
+        - {field} changes: List<(Char, Coordinate)>
+        - alive: boolean
+        - displayChar: Char
+
+        + setDirection(Direction): void
+        + isAlive(): boolean
+        + move(): void
+
+        + addObserver(GameObjectObserver): void
+        + removeObserver(GameObjectObserver): void
+        + notifyObserver(): void
+        + getChanges(): List<(Char, Coordinate)>
+    }
+
+    class Coordinate {
+        - x: int
+        - y: int
+    }
+
+    Food "1" -- "1" Coordinate : "coordinate"
+    Snake "1" -- "*" Coordinate: "path"
+    GameObject <|-- Food
+    Field "1" -- "1" Snake : "snake"
+    GameObject <|-- Snake
+    GameObject <|-- Field
+    GameObjectObserver <|.. (GameObject, Field)
+}
+
+GameObjectObserver "*" -right- "*" GameObject : "observers"
+ViewController "1" -right- "1" Field : "field"
+
+@enduml

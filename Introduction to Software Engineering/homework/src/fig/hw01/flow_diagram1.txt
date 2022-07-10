@@ -1,0 +1,22 @@
+@startuml
+start
+:3. length1 = strlen(a);\n4. length2 = strlen(b);;
+while (5. i <= length1) is (yes)
+    :7. j = j_initial;;
+    while (8. j <= length2) is (yes)
+        if (10. a[i - 1] == b[j - 1]) then (yes)
+            :12. arr[i][j] = arr[i - 1][j - 1] + 1;;
+        else (no)
+            if (16. arr[i - 1][j] > arr[i][j - 1]) then (yes)
+                :17. arr[i][j] = arr[i - 1][j];;
+            else (no)
+                :19. arr[i][j] = arr[i][j - 1];;
+            endif
+        endif
+        :21. j++;;
+    endwhile (no)
+    :23. i++;;
+endwhile (no)
+:25. printf("%d\\n",arr[length1][length2]);;
+end
+@enduml

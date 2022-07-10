@@ -1,0 +1,41 @@
+@startuml
+skinparam actorStyle awesome
+skinparam linetype ortho
+skinparam defaultFontName Songti SC
+package 订餐者 {
+    actor 订餐者 as user
+    usecase 注册账号 as register
+    usecase 查看店铺信息 as info
+    usecase 进入菜单信息界面进行点餐 as order
+    usecase 下订单预付款 as pay
+    usecase 订单挂起 as hangon
+    usecase 查看订单 as check
+    usecase 查看已完成订单 as paid
+    usecase 查看未支付订单 as unpaid
+    usecase 评价店铺 as comment
+
+}
+usecase 登陆系统 as login
+package 商家 {
+    actor 商家 as restaurateur
+    usecase 申请网上店铺 as apply
+    usecase 核实订单并安排配送 as verify
+    usecase 修改剩余菜单信息 as edit
+}
+
+user --> register
+user --> login
+user --> info
+user --> order
+user --> pay
+pay --> hangon : 金额不够时
+user --> check
+check <|-- paid
+check <|-- unpaid
+user --> comment
+
+restaurateur --> apply
+restaurateur --> login
+restaurateur --> verify
+restaurateur --> edit
+@enduml

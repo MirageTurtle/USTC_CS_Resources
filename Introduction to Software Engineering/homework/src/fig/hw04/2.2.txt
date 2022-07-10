@@ -1,0 +1,23 @@
+@startuml
+skinparam defaultFontName Songti SC
+|居民|
+start
+:添加核酸检测;
+:提出进出社区申请;
+|社区管理员|
+:查看出入申请;
+:查看核酸检测情况;
+if(是否符合通过条件) is (是) then
+    :审核通过;
+    |居民|
+    :申请通过;
+    stop
+else (否)
+    |社区管理员|
+    label tmp1
+    :审核不通过;
+    |居民|
+    label tmp2
+    :申请不通过;
+    stop
+@enduml

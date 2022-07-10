@@ -1,0 +1,23 @@
+@startuml
+start
+:2. int i;;
+if (3. n < 2) then (yes)
+    :4. printf("%d不是素数", n);;
+else (no)
+    :i = 2;
+    while (6. i < n) is (yes)
+        if (7. n%i == 0) then (yes)
+            :8. break;
+            break
+        endif
+    :6. i++;;
+    endwhile (no)
+    if (10. i < n) then (yes)
+        :11. printf("%d不是素数\\n", n);;
+    else (no)
+        :14. printf("%d是素数\\n", n);;
+    endif
+endif
+:16. return 0;
+end
+@enduml

@@ -1,0 +1,48 @@
+@startuml
+skinparam defaultFontName Songti SC
+|用户|
+start
+:下单;
+|平台|
+:派送订单;
+|车主|
+if (是否接单？) is (是) then
+    fork
+        |用户|
+        :可查看车主到达时间;
+        if (取消订单？) is (是) then
+            |平台|
+            :取消订单;
+            :通知车主;
+            end
+        endif
+    fork again
+        |车主|
+        :接顾客;
+    end fork
+    if (接到顾客？) is (是) then
+        |车主|
+        :进行身份验证;
+        :开始运送乘客并在平台上勾选开始订单;
+        |平台|
+        :计费;
+        |车主|
+        :到达目的地后勾选订单完成;
+        |平台|
+        :向用户发起账单;
+        |用户|
+        :根据平台发起的计费账单支付订单;
+    else (否)
+        |平台|
+        :取消订单;
+        :通知用户;
+        end
+    endif
+'else (否)
+    '|车主|
+    '|平台|
+    ':取消订单;
+    ':查看下一单;
+endif
+stop
+@enduml

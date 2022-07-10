@@ -8,6 +8,7 @@ This is a repo with CS course resources for USTCer.
 - 区块链技术与应用 Blockchain Technology and Application
 - 计算机体系结构 Computer Architecture
 - 数据库系统及应用 An Introduction to Database System
+- 软件工程导论 Introduction to Software Engineering
 
 ## 声明
 

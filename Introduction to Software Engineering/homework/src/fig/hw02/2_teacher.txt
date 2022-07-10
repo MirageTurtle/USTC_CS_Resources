@@ -1,0 +1,21 @@
+@startuml
+
+actor 老师
+entity 登陆系统
+entity 学生界面
+
+activate 老师
+老师 -> 登陆系统: 登陆
+activate 登陆系统
+登陆系统 -> 登陆系统: 输入账号密码
+登陆系统 -> 老师界面: 登陆成功
+activate 老师界面
+老师界面 -> 老师界面: 查看所授受课程
+老师界面 -> 老师界面: 选择对应的课程批改作业
+老师界面 -> 登陆系统: 退出
+deactivate 老师界面
+deactivate 登陆系统
+登陆系统 -> 老师: 退出登陆系统
+deactivate 老师
+
+@enduml

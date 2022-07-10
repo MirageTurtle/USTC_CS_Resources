@@ -1,0 +1,56 @@
+@startuml
+skinparam actorStyle awesome
+skinparam linetype ortho
+skinparam defaultFontName Songti SC
+
+usecase 登陆 as login
+usecase 维护个人信息 as info
+
+package 社区管理员 {
+    actor 社区管理员 as administer
+    usecase 管理居民信息 as manage_resident
+    rectangle 高危人群相关 {
+        usecase 设置高危人群 as set_risk
+        usecase 查看高危人群 as check_risk
+        usecase 解除高危人群 as free_risk
+    }
+    usecase 查看出入申请 as check_apply
+    usecase 审批出入申请 as review_apply
+    usecase 查看社区总体人员核酸检测情况 as check_test
+    usecase 通知未进行核酸检测的人员进行检测 as notify
+    usecase 管理社区管理员 as manage_administer
+}
+administer --> login
+administer --> info
+administer --> manage_resident
+administer --> manage_administer
+administer --> set_risk
+administer --> check_risk
+administer --> free_risk
+administer --> check_apply
+administer --> review_apply
+administer --> check_test
+administer --> notify
+
+check_test ..> notify : <<extend>>
+
+
+package 居民 {
+    actor 居民 as resident
+    usecase 进行进出社区申请 as apply
+    usecase 查看过往申请记录 as history
+    usecase "上传/下载核酸检测报告" as upload_download
+    usecase 添加核酸检测 as add_test
+    usecase 维护核酸检测信息 as maintain
+    resident --> apply
+    resident --> history
+    resident --> upload_download
+    resident --> add_test
+    resident --> maintain
+}
+resident --> login
+resident --> info
+
+apply ..> check_apply : <<extend>>
+check_apply ..> review_apply : <<extend>>
+@enduml
