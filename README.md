@@ -10,6 +10,7 @@ This is a repo with CS course resources for USTCer.
 - 数据库系统及应用 An Introduction to Database System
 - 软件工程导论 Introduction to Software Engineering
 - 计算方法B Computational Methods B
+- 编译原理和技术 Principles and Techniques of Compiler
 
 ## 声明
 
